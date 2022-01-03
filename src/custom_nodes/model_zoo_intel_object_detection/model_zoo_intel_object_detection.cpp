@@ -218,7 +218,7 @@ int initialize(void** customNodeLibraryInternalManager, const struct CustomNodeP
     // creating BuffersQueues for inputs dims in getInputsInfo
     NODE_ASSERT(internalManager->createBuffersQueue(INPUT_IMAGE_INFO_DIMS_NAME, 4 * sizeof(uint64_t), QUEUE_SIZE), "buffer creation failed");
     NODE_ASSERT(internalManager->createBuffersQueue(INPUT_DETECTION_INFO_DIMS_NAME, 4 * sizeof(uint64_t), QUEUE_SIZE), "buffer creation failed");
-    
+
     // creating BuffersQueues for outputs dims in getOutputsInfo
     NODE_ASSERT(internalManager->createBuffersQueue(OUTPUT_IMAGES_INFO_DIMS_NAME, 5 * sizeof(uint64_t), QUEUE_SIZE), "buffer creation failed");
     NODE_ASSERT(internalManager->createBuffersQueue(OUTPUT_COORDINATES_INFO_DIMS_NAME, 3 * sizeof(uint64_t), QUEUE_SIZE), "buffer creation failed");
