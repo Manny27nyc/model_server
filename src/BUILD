@@ -306,8 +306,8 @@ cc_binary(
         "custom_node_interface.h",
         "custom_nodes/common/buffersqueue.hpp",
         "custom_nodes/common/buffersqueue.cpp",
-        "custom_nodes/common/customNodeLibraryInternalManager.hpp",
-        "custom_nodes/common/customNodeLibraryInternalManager.cpp",
+        "custom_nodes/common/custom_node_library_internal_manager.hpp",
+        "custom_nodes/common/custom_node_library_internal_manager.cpp",
         "queue.hpp"
     ],
     deps = [
@@ -329,8 +329,8 @@ cc_binary(
         "custom_node_interface.h",
         "custom_nodes/common/buffersqueue.hpp",
         "custom_nodes/common/buffersqueue.cpp",
-        "custom_nodes/common/customNodeLibraryInternalManager.hpp",
-        "custom_nodes/common/customNodeLibraryInternalManager.cpp",
+        "custom_nodes/common/custom_node_library_internal_manager.hpp",
+        "custom_nodes/common/custom_node_library_internal_manager.cpp",
         "queue.hpp"
     ],
     deps = [
@@ -417,8 +417,8 @@ cc_binary(
         "custom_node_interface.h",
         "custom_nodes/common/buffersqueue.hpp",
         "custom_nodes/common/buffersqueue.cpp",
-        "custom_nodes/common/customNodeLibraryInternalManager.hpp",
-        "custom_nodes/common/customNodeLibraryInternalManager.cpp",
+        "custom_nodes/common/custom_node_library_internal_manager.hpp",
+        "custom_nodes/common/custom_node_library_internal_manager.cpp",
         "queue.hpp"
     ],
     deps = [
