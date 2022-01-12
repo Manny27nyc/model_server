@@ -242,6 +242,7 @@ protected:
 };
 
 void waitForOVMSConfigReload(ovms::ModelManager& manager);
+void waitForOVMSResourcesCleanup(ovms::ModelManager& manager);
 
 template <typename T>
 static ovms::NodeLibrary createLibraryMock() {
