@@ -488,7 +488,7 @@ protected:
     void SetUp() override {
         PredictValidation::SetUp();
 
-        networkInputs = ovms::tensor_map_t({
+        servableInputs = ovms::tensor_map_t({
             {"Input_FP32_any_224:512_224:512_3_NHWC",
                 std::make_shared<ovms::TensorInfo>("Input_FP32_any_224:512_224:512_3_NHWC", ovms::Precision::FP32, ovms::Shape{ovms::Dimension::any(), {224, 512}, {224, 512}, 3}, ovms::layout_t{"NHWC"})},
             {"Input_U8_100:200_any_CN",

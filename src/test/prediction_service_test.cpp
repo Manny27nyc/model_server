@@ -961,4 +961,33 @@ TEST_F(TestPredict, PerformInferenceWithBinaryInputNoInputShape) {
     ASSERT_EQ(performInferenceWithRequest(request, response, "increment_1x3x4x5"), ovms::StatusCode::INVALID_NO_OF_SHAPE_DIMENSIONS);
 }
 
+/**
+ * Scenario - inference with different shapes with dynamic dummy, both dimensions reshaped to any.
+ * No model reload performed between requests.
+ *
+ * 1. Load model with input shape (-1, -1)
+ * 2. Do the inference with (3, 2) shape, expect correct results
+ * 3. Do the inference with (1, 4) shape, expect correct results as well
+ */
+
+TEST_F(TestPredict, PerformInferenceDummyAllDimensionsAny) {
+    using namespace ovms;
+
+    // Prepare model with changed layout to nhwc (internal layout=nchw)
+    ModelConfig config = DUMMY_MODEL_CONFIG;
+    config.setBatchingParams("0");
+    ASSERT_EQ(config.parseShapeParameter("(-1,-1)"), ovms::StatusCode::OK);
+    ASSERT_EQ(manager.reloadModelWithVersions(config), ovms::StatusCode::OK_RELOADED);
+
+    tensorflow::serving::PredictResponse response;
+
+    // Do the inference with (3, 2)
+    ASSERT_EQ(performInferenceWithShape(response, {3, 2}), ovms::StatusCode::OK);
+    checkOutputShape(response, {3, 2}, DUMMY_MODEL_OUTPUT_NAME);
+
+    // Do the inference with (1, 4)
+    ASSERT_EQ(performInferenceWithShape(response, {1, 4}), ovms::StatusCode::OK);
+    checkOutputShape(response, {1, 4}, DUMMY_MODEL_OUTPUT_NAME);
+}
+
 #pragma GCC diagnostic pop
