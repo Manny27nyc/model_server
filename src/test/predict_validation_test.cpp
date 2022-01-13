@@ -29,19 +29,19 @@ using ::testing::ReturnRef;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-class PredictValidation : public ::testing::Test {
-    class MockModelInstance : public ovms::ModelInstance {
-    public:
-        MockModelInstance(ov::runtime::Core& ieCore) :
-            ModelInstance("UNUSED_NAME", 42, ieCore) {}
-        MOCK_METHOD(const ovms::tensor_map_t&, getInputsInfo, (), (const, override));
-        MOCK_METHOD(ovms::Dimension, getBatchSize, (), (const, override));
-        MOCK_METHOD(const ovms::ModelConfig&, getModelConfig, (), (const, override));
-        const ovms::Status mockValidate(const tensorflow::serving::PredictRequest* request) {
-            return validate(request);
-        }
-    };
+class MockModelInstance : public ovms::ModelInstance {
+public:
+    MockModelInstance(ov::runtime::Core& ieCore) :
+        ModelInstance("UNUSED_NAME", 42, ieCore) {}
+    MOCK_METHOD(const ovms::tensor_map_t&, getInputsInfo, (), (const, override));
+    MOCK_METHOD(ovms::Dimension, getBatchSize, (), (const, override));
+    MOCK_METHOD(const ovms::ModelConfig&, getModelConfig, (), (const, override));
+    const ovms::Status mockValidate(const tensorflow::serving::PredictRequest* request) {
+        return validate(request);
+    }
+};
 
+class PredictValidation : public ::testing::Test {
 protected:
     std::unique_ptr<ov::runtime::Core> ieCore;
     std::unique_ptr<NiceMock<MockModelInstance>> instance;
@@ -482,5 +482,9 @@ TEST_F(PredictValidation, RequestNegativeValueInShape) {
     auto status = instance->mockValidate(&request);
     EXPECT_EQ(status, ovms::StatusCode::INVALID_SHAPE);
 }
+
+class PredictValidationDynamicModel : public PredictValidation {
+protected:
+};
 
 #pragma GCC diagnostic pop
