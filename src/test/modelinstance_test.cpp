@@ -309,6 +309,18 @@ TEST_F(TestLoadModel, SuccessfulLoadDummyAllDimensionsAny) {
         {ovms::Dimension::any(), ovms::Dimension::any()}));
 }
 
+TEST_F(TestLoadModel, SuccessfulLoadDummyDimensionRanges) {
+    ovms::ModelInstance modelInstance("UNUSED_NAME", UNUSED_MODEL_VERSION, *ieCore);
+    ovms::ModelConfig config = DUMMY_MODEL_CONFIG;
+    config.setBatchingParams("0");
+    ASSERT_EQ(config.parseShapeParameter("(20:30,40:50)"), ovms::StatusCode::OK);
+    ASSERT_EQ(modelInstance.loadModel(config), ovms::StatusCode::OK);
+    ASSERT_EQ(ovms::ModelVersionState::AVAILABLE, modelInstance.getStatus().getState());
+    ASSERT_NE(modelInstance.getInputsInfo().begin(), modelInstance.getInputsInfo().end());
+    ASSERT_EQ(modelInstance.getInputsInfo().begin()->second->getShape(), ovms::Shape(
+        {{20, 30}, {40, 50}}));
+}
+
 class TestLoadModelWithMapping : public TestLoadModel {
 protected:
     void SetUp() override {

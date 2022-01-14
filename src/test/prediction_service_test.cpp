@@ -966,8 +966,8 @@ TEST_F(TestPredict, PerformInferenceWithBinaryInputNoInputShape) {
  * No model reload performed between requests.
  *
  * 1. Load model with input shape (-1, -1)
- * 2. Do the inference with (3, 2) shape, expect correct results
- * 3. Do the inference with (1, 4) shape, expect correct results as well
+ * 2. Do the inference with (3, 2) shape, expect correct output shape
+ * 3. Do the inference with (1, 4) shape, expect correct output shape
  */
 
 TEST_F(TestPredict, PerformInferenceDummyAllDimensionsAny) {
@@ -988,6 +988,45 @@ TEST_F(TestPredict, PerformInferenceDummyAllDimensionsAny) {
     // Do the inference with (1, 4)
     ASSERT_EQ(performInferenceWithShape(response, {1, 4}), ovms::StatusCode::OK);
     checkOutputShape(response, {1, 4}, DUMMY_MODEL_OUTPUT_NAME);
+}
+
+/**
+ * Scenario - inference with different shapes with dynamic dummy, both dimensions reshaped to range.
+ * No model reload performed between requests.
+ *
+ * 1. Load model with input shape (2:4, 1:5)
+ * 2. Do the inference with (1, 1) shape, expect not in range
+ * 3. Do the inference with (2, 1) shape, expect success and correct output shape
+ * 4. Do the inference with (3, 2) shape, expect success and correct output shape
+ * 5. Do the inference with (3, 5) shape, expect success and correct output shape
+ * 6. Do the inference with (3, 6) shape, expect not in range
+ * 7. Do the inference with (5, 5) shape, expect not in range
+ */
+
+TEST_F(TestPredict, PerformInferenceDummyAllDimensionsHaveRange) {
+    using namespace ovms;
+
+    // Prepare model with changed layout to nhwc (internal layout=nchw)
+    ModelConfig config = DUMMY_MODEL_CONFIG;
+    config.setBatchingParams("0");
+    ASSERT_EQ(config.parseShapeParameter("(2:4,1:5)"), ovms::StatusCode::OK);
+    ASSERT_EQ(manager.reloadModelWithVersions(config), ovms::StatusCode::OK_RELOADED);
+
+    tensorflow::serving::PredictResponse response;
+
+    ASSERT_EQ(performInferenceWithShape(response, {1, 1}), ovms::StatusCode::INVALID_BATCH_SIZE);
+
+    ASSERT_EQ(performInferenceWithShape(response, {2, 1}), ovms::StatusCode::OK);
+    checkOutputShape(response, {2, 1}, DUMMY_MODEL_OUTPUT_NAME);
+
+    ASSERT_EQ(performInferenceWithShape(response, {3, 2}), ovms::StatusCode::OK);
+    checkOutputShape(response, {3, 2}, DUMMY_MODEL_OUTPUT_NAME);
+
+    ASSERT_EQ(performInferenceWithShape(response, {3, 5}), ovms::StatusCode::OK);
+    checkOutputShape(response, {3, 5}, DUMMY_MODEL_OUTPUT_NAME);
+
+    ASSERT_EQ(performInferenceWithShape(response, {3, 6}), ovms::StatusCode::INVALID_SHAPE);
+    ASSERT_EQ(performInferenceWithShape(response, {5, 5}), ovms::StatusCode::INVALID_BATCH_SIZE);
 }
 
 #pragma GCC diagnostic pop
